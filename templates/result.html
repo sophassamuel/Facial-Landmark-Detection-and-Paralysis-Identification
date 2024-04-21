@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification Result</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .image-container {
+            max-width: 500px; /* Adjust as needed */
+            margin: auto; /* Center the image */
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: auto; /* Center the image */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Image Classification Result</h1>
+        <div class="image-container">
+            <img src="data:image/png;base64,{{ image_data }}" alt="Uploaded Image">
+        </div>
+        <p class="prediction">Predicted Output: {{ prediction }}</p>
+        <p><a href="/">Upload another image</a></p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 80px 45px;
+            background: rgb(37, 29, 179);
+            background: linear-gradient(90deg, rgba(37, 29, 179, 1) 0%, rgba(89, 89, 228, 1) 35%, rgba(79, 207, 233, 1) 100%);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-decoration: none;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        nav {
+            padding: 25px 25px;
+            position: fixed;
+            background-color: white;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            transition: all 0.4s ease;
+        }
+
+        nav.sticky {
+            padding: 15px 20px;
+            background: #4070f4;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .nav-content {
+            height: 100%;
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        nav .logo a {
+            font-weight: 500;
+            font-size: 35px;
+            color: #4070f4;
+        }
+
+        nav.sticky .logo a {
+            color: #fff;
+        }
+
+        .nav-content .nav-links {
+            display: flex;
+        }
+
+        .nav-content .nav-links li {
+            list-style: none;
+            margin: 0 8px;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #0E2431;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 10px 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            color: #4070f4;
+        }
+
+        nav.sticky .nav-links li a {
+            color: #fff;
+            transition: all 0.4s ease;
+        }
+
+        nav.sticky .nav-links li a:hover {
+            color: #0E2431;
+        }
+
+        .main-content {
+            margin-top: 50px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #video-element {
+            padding: 12px 24px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 500px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        #image-container {
+            display: none;
+        }
+
+        #uploaded-image {
+            width: 500px;
+            height: auto;
+            margin-top: 20px;
+        }
+
+        #result {
+            color: #fff;
+            margin-top: 20px;
+        }
+
+        .button-container {
+            font-family: "Great Vibes", cursive;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        #upload-btn,
+        #camera-btn {
+            font-family: "Great Vibes", cursive;
+            padding: 25px 35px;
+            background-color: #fff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #upload-btn:hover,
+        #camera-btn:hover {
+            color: #fff;
+        }
+
+        h1 {
+            color: #fff;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 85px;
+            font-weight: bold;
+            letter-spacing: -1px;
+            line-height: 1;
+            text-align: center;
+            text-shadow: 2px 2px 2px #0E2431;
+            /* Add a slight shadow to create a 3D effect */
+        }
+
+        #result {
+            color: #fff;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* CSS */
+        .button-85 {
+            font-family: "Great Vibes", cursive;            
+            padding: 0.6em 2em;
+            border: none;
+            outline: none;
+            color: rgb(255, 255, 255);
+            background: #111;
+            cursor: pointer;
+            position: relative;
+            z-index: 0;
+            border-radius: 10px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .button-85:before {
+            content: "";
+            background: linear-gradient(45deg,
+                    #ff0000,
+                    #ff7300,
+                    #fffb00,
+                    #48ff00,
+                    #00ffd5,
+                    #002bff,
+                    #7a00ff,
+                    #ff00c8,
+                    #ff0000);
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            background-size: 400%;
+            z-index: -1;
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            animation: glowing-button-85 20s linear infinite;
+            transition: opacity 0.3s ease-in-out;
+            border-radius: 10px;
+            font-family: "Great Vibes", cursive;
+        }
+
+        @keyframes glowing-button-85 {
+            0% {
+                background-position: 0 0;
+            }
+
+            50% {
+                background-position: 400% 0;
+            }
+
+            100% {
+                background-position: 0 0;
+            }
+        }
+
+        .button-85:after {
+            z-index: -1;
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #222;
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+            font-family: "Great Vibes", cursive;
+        }
+
+        /* Add spacing between buttons */
+        #upload-btn {
+            font-family: "Great Vibes", cursive;
+            margin-right: 10px;
+        }
+
+        /* Responsive styles */
+        @media only screen and (max-width: 768px) {
+            .navbar a {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            #video-element {
+                max-width: 300px;
+                max-height: 300px;
+            }
+
+            #uploaded-image {
+                width: 300px;
+                height: auto;
+            }
+
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #upload-btn,
+            #camera-btn {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-content">
+            <div class="logo">
+                <a href="#">FacePal</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="main-content">
+        <h1>Facial Palsy Classification</h1>
+        <input type="file" accept=".png, .jpg, .jpeg" id="file-input">
+
+        <div class="button-container">
+            <button class="button-85" id="upload-btn">Upload</button>
+            <button class="button-85" id="camera-btn">Capture</button>
+        </div>
+        <video id="video-element" autoplay></video>
+        <canvas id="canvas-element" style="display: none;"></canvas>
+        <div id="image-container">
+            <img id="uploaded-image" src="" alt="Uploaded Image">
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fileInput = document.getElementById('file-input');
+            const uploadBtn = document.getElementById('upload-btn');
+            const cameraBtn = document.getElementById('camera-btn');
+            const videoElement = document.getElementById('video-element');
+            const canvasElement = document.getElementById('canvas-element');
+            const resultDiv = document.getElementById('result');
+            const imageContainer = document.getElementById('image-container');
+            const uploadedImage = document.getElementById('uploaded-image');
+
+            function handleClassificationResult(result) {
+                resultDiv.textContent = 'Classification result: ' + result.prediction;
+            }
+
+            function showImage(imageData) {
+                uploadedImage.src = imageData;
+                uploadedImage.style.width = '500px'; // Set width to 500px
+                uploadedImage.style.height = '500px';
+                imageContainer.style.display = 'block';
+            }
+
+            function startCamera() {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function (stream) {
+                        videoElement.srcObject = stream;
+                        videoElement.play();
+                        videoElement.style.display = 'block';
+                        addCaptureButton();
+                    })
+                    .catch(function (error) {
+                        console.error('Error accessing camera:', error);
+                    });
+            }
+
+            function captureImage() {
+                const context = canvasElement.getContext('2d');
+                canvasElement.width = videoElement.videoWidth;
+                canvasElement.height = videoElement.videoHeight;
+                context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                const imageData = canvasElement.toDataURL('image/png');
+                classifyImage(imageData);
+            }
+
+            function classifyImage(imageData) {
+                // Send image data to Flask server
+                fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ image_data: imageData })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        handleClassificationResult(data);
+                        showImage(imageData);
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            function addCaptureButton() {
+                // Create capture button dynamically
+                const captureBtn = document.createElement('button');
+                captureBtn.textContent = 'Capture Image';
+                captureBtn.id = 'capture-btn';
+                captureBtn.class = "button-85";
+                captureBtn.style.marginTop = '10px';
+                captureBtn.style.padding = '12px 24px';
+                captureBtn.style.backgroundColor = '#fff';
+                captureBtn.style.color = '#3498db';
+                captureBtn.style.border = 'none';
+                captureBtn.style.borderRadius = '25px';
+                captureBtn.style.cursor = 'pointer';
+                captureBtn.style.transition = '0.3s';
+                captureBtn.style.display = 'block';
+                captureBtn.style.margin = '0 auto';
+                captureBtn.addEventListener('click', captureImage);
+                document.body.appendChild(captureBtn);
+            }
+
+            // Event listeners for upload and camera buttons
+            uploadBtn.addEventListener('click', function () {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function () {
+                    const imageData = reader.result;
+                    classifyImage(imageData);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            cameraBtn.addEventListener('click', function () {
+                startCamera();
+            });
+        });
+    </script>
+</body>
+
+</html>
