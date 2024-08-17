@@ -1,4 +1,4 @@
-# BreadcrumbsFacial-Landmark-Detection-and-Paralysis-Identification
+Facial-Landmark-Detection-and-Paralysis-Identification
 
 This project uses Convolutional Neural Networks (CNN) and MobileNet for facial landmark detection and paralysis identification. It is built using Python 3.11 and Flask as the web framework for serving the model. The application can detect facial landmarks and analyze the symmetry of the face to identify potential signs of facial paralysis.
 
